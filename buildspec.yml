@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+    pre_build:
+        commands:
+            - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+            - IMAGE_TAG=${COMMIT_HASH:=latest}
+            - echo Logging in to Amazon ECR...
+            - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_DOMAIN
+            - REPOSITORY_URI=$AWS_ECR_ACCOUNT_DOMAIN/$IMAGE_REPO_NAME
+    build:
+        commands:
+            - echo Build started on `date`
+            - echo Building the Docker image...
+            - printf '[{"name":"stickler-backend","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG
+            - cd backend
+            - docker build -t $REPOSITORY_URI:latest .
+            - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+    post_build:
+        commands:
+            - echo Build completed on `date`
+            - echo Pushing the Docker image...
+            - docker push $REPOSITORY_URI:latest
+            - docker push $REPOSITORY_URI:$IMAGE_TAG
+            - echo Writing image definitions file...
