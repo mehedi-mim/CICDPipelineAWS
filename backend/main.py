@@ -13,6 +13,7 @@ app.add_middleware(
 
 @app.get("/health_check")
 def read_root_health_check():
+    print("Code Pipeline done!")
     return {"data": "success!"}
 
 
