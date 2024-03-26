@@ -14,6 +14,7 @@ app.add_middleware(
 @app.get("/health_check")
 def read_root_health_check():
     print("I'm done with application load balancers.")
+    print("Service name is changed.")
     return {"data": "success!"}
 
 
