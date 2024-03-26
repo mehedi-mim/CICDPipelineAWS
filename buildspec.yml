@@ -9,7 +9,7 @@ phases:
         commands:
             - echo Build started on `date`
             - echo Building the Docker image...
-            - printf '[{"name":"cicd-backend","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG
+            - printf '[{"name":"CICDBackendSin","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
             - cd backend
             - docker build -t $IMAGE_REPO_NAME:latest .
             - docker tag $IMAGE_REPO_NAME:latest $REPOSITORY_URI:$IMAGE_TAG
@@ -18,3 +18,5 @@ phases:
             - echo Build completed on `date`
             - echo Pushing the Docker image...
             - docker push $REPOSITORY_URI:$IMAGE_TAG
+    artifacts:
+        files: imagedefinitions.json
